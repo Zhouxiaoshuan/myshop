@@ -1,0 +1,23 @@
+{% extends 'user_operation/userCenter.html' %}
+{% block main %}
+    <div class="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'user_operation:userCenterOrder' %}">待评价</a></li>
+            <li><a href="{% url 'user_operation:userCenterHistory' %}">历史订单</a></li>
+            <li><a href="{% url 'user_operation:userCenterInfo' %}">个人信息</a></li>
+            <li><a href="{% url 'user_operation:userCenterAddress' %}">收货地址</a></li>
+        </ul>
+    </div>
+    <div class="center_right">
+        <div class="aftersale">
+            <a href="{% url 'user_operation:tochangegoods' %}"><button  class="aftersale btn btn-default">申请换货</button></a><br>
+            <a href="{% url 'user_operation:toreturngoods' %}"><button  class="aftersale btn btn-default" >申请退货</button></a>
+        </div>
+        <div class="address">
+            收货地址：
+            湖北省武汉市江夏区<br>
+            收货人：周小栓<br>
+            电话：123546
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,5 @@
+{{ object.name }}
+{{ object.category.name }}
+{{ object.category.parent_category_id.name }}
+{{ object.goods_sn }}
+{{ object.shop_price }}

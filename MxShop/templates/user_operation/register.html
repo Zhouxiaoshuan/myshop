@@ -1,0 +1,42 @@
+{% extends 'goods/base.html' %}
+{% block main %}
+    <div class="single_top">
+        <div class="single_top_login">
+            <ul class="nav nav-tabs">
+                <li ><a href="{% url 'user_operation:toLogin' %}">登陆</a></li>
+                <li class="active"><a href="{% url 'user_operation:toRegister' %}">注册</a></li>
+            </ul>
+            <form action="{% url 'user_operation:userRegister' %}" method="post">
+                {% csrf_token %}
+                <div>
+                    <div style="font-weight: lighter">
+                        <label1>用户名<span>*</span>：</label1>
+                        <input name="username" type="text" class="form-control input-lg" required="required" placeholder="请输入用户名" minlength="6" >
+                    </div>
+                    <div style="font-weight: lighter">
+                        <label1>邮箱<span>*</span>：</label1>
+                        <input name="email" type="email" class="form-control input-lg" required="required" placeholder="请输入邮箱">
+                    </div>
+                    <div>
+                        <lable2>密码<span>*</span>：</lable2>
+                        <input name="password" type="password" class="form-control input-lg" required="required" placeholder="请输入密码">
+                    </div>
+                    <div>
+                        <lable2>再次输入密码<span>*</span>：</lable2>
+                        <input name="password1" type="password" class="form-control input-lg" required="required" placeholder="请再次输入密码">
+                    </div>
+                    <button class="btn btn-lg btn-primary" onclick="location.href='{% url 'user_operation:toRegister' %}'">注册</button>
+                </div>
+
+            </form>
+        {% if messages %}
+        {% for message in messages %}
+            <script>
+                window.alert('{{ message }}')
+            </script>
+
+        {% endfor %}
+        {% endif %}
+        </div>
+    </div>
+{% endblock main %}

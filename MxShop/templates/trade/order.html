@@ -1,0 +1,94 @@
+{% extends 'goods/base.html' %}
+{% load user_operation_tags %}
+{% block main %}
+    <div class="single_top">
+    <h1>订单</h1>
+        <ul>
+
+            <li>
+                {% for address in address %}
+                <td>收货地址：</td>
+                <input type="hidden" id="oaddress" value="{{ address.id }}" name="addr">
+                {{ address.address }}<br>
+                收件人：{{ address.signer_name }}<br>
+                电话号码：{{ address.signer_mobile }}
+                {% endfor %}
+            </li>
+
+        </ul>
+        <ul>
+
+            {% for trade in totalTrade %}
+
+            <li class="goodsList">
+                <div class="orderList">
+                    <img class="orderImg" src="/{{ trade.goods.goods_front_image }}" >
+                </div>
+                <div class="goodsName">
+                    <h5>{{ trade.goods }}</h5>
+                </div>
+                <div class="goodsPrice">
+                    <span>¥{{ trade.goods.shop_price }}</span>
+                    <span>件数：{{ trade.nums }}</span>
+                    <span>小计：{{ trade.totalPrice }}</span>
+                </div>
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        <div class="pay">
+            <h2>合计：</h2>
+            <div>共计商品{{ totalCount }}件</div>
+            <div>共需支付<span id="price">{{ totalPrice }}</span>元</div>
+        </div>
+
+        <h3 class="common_title">支付方式</h3>
+        <div class="common_list_con clearfix">
+            <div class="pay_style_con clearfix">
+                <input type="radio" name="pay_style" value=1>
+                <label class="weixin">微信支付</label>
+                <input type="radio" name="pay_style" value=2>
+                <label class="zhifubao">支付宝</label>
+            </div>
+        </div>
+        <div>
+        {% csrf_token %}
+        <a type="button" href="javascript:;" data-skus="{{ sku_id }}" style="margin-top: 30px;" class="btn btn-lg btn-primary" id="order_btn">提交订单</a>
+        </div>
+    </div>
+
+
+
+    <script>
+    $(function () {
+        $('#order_btn').click(function () {
+            add_id = $('input[name="addr"]').val()
+            pay_id = $('input[name="pay_style"]:checked').val()
+            if(pay_id == null){
+                alert("请选择一种支付方式")
+                return false
+            }
+            skus = $('#order_btn').attr('data-skus')
+            total_price = $('#price').text()
+            csrfmiddlewaretoken  = $('input[name="csrfmiddlewaretoken"]').val()
+            params = {
+                csrfmiddlewaretoken,
+                add_id,
+                pay_id,
+                skus,
+                total_price,
+            }
+            $.post('{% url 'trade:submitOrder' %}', params, function (data) {
+                if(data.res==3){
+                    window.open(data.msg);
+                }
+                else {
+                }
+            })
+        })
+
+    })
+    </script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'goods/base.html' %}
+{% load highlight %}
+{% block main %}
+    {%  if query %}
+    <div class="single_top">
+        <div class="product-left">
+            {% for list in page.object_list %}
+            <div class=" product-example">
+                <a href="{% url 'goods:details' list.pk %}"><img class="img-responsive chain" src="/{{ list.object.goods_front_image }}" alt=" " /></a>
+                <span class="star"> </span>
+                <div class="grid-chain-bottom">
+                    <h6><a href="{{list.get_absolute_url}}">{{ list.object.name }}</a></h6>
+                    <div class="star-price">
+                        <div class="dolor-grid">
+                            <span class="actual">¥{{ list.object.shop_price }}</span>
+                            <span class="reducedfrom">¥{{ list.object.market_price }}</span>
+
+                        </div>
+                        <a class="now-get get-cart" href="#">ADD TO CART</a>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>未查找到该类商品</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock main %}

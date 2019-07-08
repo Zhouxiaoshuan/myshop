@@ -1,0 +1,50 @@
+
+
+.usercenter{
+    width: 1140px;
+    margin: 0 auto;
+}
+
+.usermain{
+    width: 100%;
+    min-height: 500px;
+    overflow: hidden;
+    padding: 20px 10px 20px 10px;
+    margin:50px 0px 50px 0px;
+}
+
+.navigation{
+    margin-left:10px;
+    width: 27%;
+    float: left;
+    min-height: 500px;
+    text-indent: 20px;
+    padding: 20px 10px 20px 10px;
+    background-color: #4B4B4B;
+}
+
+.navigation ul li{
+    height:50px;
+    line-height: 30px;
+    font-size: 20px;
+    display: block;
+}
+.navigation ul li a{
+    color: #999;
+}
+
+
+.center_right{
+    width: 68%;
+    float: right;
+    margin: 0px 10px 10px 30px;
+}
+
+.userShoppingCar{
+    width: 95%;
+
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom:20px;
+
+}

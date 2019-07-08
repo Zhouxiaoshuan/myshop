@@ -1,0 +1,154 @@
+
+{% extends 'goods/base.html' %}
+{% load staticfiles %}
+{% block main %}
+
+<div class=" single_top">
+
+    <div class=" images_3_of_2 con-FangDa" id="fangdajing">
+        <div class="con-fangDaIMg">
+{#            原图#}
+            <img src="/{{ goods.goods_front_image }}">
+            <div class="magnifyingBegin"></div>
+            <div class="magnifyingShow"><img src="/{{ goods.goods_front_image }}"></div>
+        </div>
+    </div>
+    <div class="desc1 span_3_of_2 goods_detail_list" data-id="{{ goods.id }}">
+        <form action="{% url 'trade:order_getNow' %}" method="post" id="order_form">
+        {% csrf_token %}
+        <input type="hidden" name="sku_id" value="{{ goods.id }}">
+        <h1>{{ goods.name }}</h1>
+        <ul class="price_single">
+            <li class="head"><h2>¥<em id="gprice">{{ goods.shop_price }}</em></h2></li>
+            <span>数量：</span>
+            <span class="num_add fl">
+                <a href="javascript:;" class="minus fr" id="minus">-</a>
+                <input type="text" class="num_show fl" value="1" id="num_show" name="num_show">
+                <a href="javascript:;" class="add fr" id="add">+</a>
+
+            </span>
+            <div class="total">总价：<em id="gtotal"></em></div>
+            <li class="head_desc">库存：{{ goods.goods_num }}</li>
+
+            <div class="clearfix"> </div>
+        </ul>
+        <p>{{ goods.goods_brief }}</p>
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+        <a href="javascript:;" class="now-get btn" id="add_cart">加入购物车</a>
+        {% else %}
+        <a href="{% url 'goods:toLogin' %}" class="now-get">加入购物车</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <input class="now-get btn" type="submit" style="width: 106px;height: 42px;background: #0f0f0f;color: white;" value="立即购买" id="buy">
+        {% else %}
+        <a href="{% url 'goods:toLogin' %}" class="now-get">立即购买</a>
+        {% endif %}
+        </form>
+    </div>
+    <div class="clearfix"> </div>
+    <div class="toogle">
+        <h3 class="m_3">Product Details</h3>
+        <p class="m_text">{{ goods.goods_desc }}</p>
+    </div>
+
+    <ul class="con-FangDa-ImgList">
+        <h2>相关热门商品：</h2>
+        {% for recommend_goods in recommend_goods %}
+            <li><a href="{{recommend_goods.get_absolute_url}}" ><img src="/{{ recommend_goods.goods_front_image }}"></a>
+                <div class="grid-flex"><a href="{{recommend_goods.get_absolute_url}}">{{ recommend_goods.name }}</a>
+                    <p style="bottom: 1px;text-align: center;text-decoration: none;">¥{{ recommend_goods.shop_price }}</p></div></li>
+        {% endfor %}
+    </ul>
+
+    <ul class="list-unstyled" class="detail-comment">
+        <h2>商品评论：</h2>
+    {% for comment in comment_list %}
+    <li class="comment-item" style="width: 95%;word-wrap: break-word">
+        <div>
+            <span class="nickname">{{ comment.name }}</span>
+            <time class="submit-date">{{ comment.create_time }}</time>
+        </div>
+        <div style="margin-top: 15px;border-bottom: 1px solid #ccc; ">
+            <span class="text" style="margin-top: 15px;">
+              {{ comment.content }}
+            </span>
+        </div>
+        {% if comment.reply_content %}
+
+          <div style="margin-left: 30px;border-left:1px solid #ccc;"  >
+              <div style="margin-top: 15px">
+                  <time class="submit-date">{{ comment.reply_time }}</time>
+                  <span style="color: #7B68EE">商家回复  :</span>
+              </div>
+              <div style="margin-top: 15px;border-bottom: 1px solid #ccc;">
+                  <span>{{ comment.reply_content }}</span>
+              </div>
+          </div>
+        {% endif %}
+    </li>
+    {% empty %}
+    暂无评论
+    {% endfor %}
+    </ul>
+
+    <script>
+        $(function(){
+            $('#add').click(function () {
+                var value = parseInt($('#num_show').val())
+                var inventory = parseInt($('#kucun').text())
+                {#alert(inventory)#}
+                if(value>=inventory){
+                    $('#num_show').val(value)
+                    cal_price()
+                    return;
+                }
+                value += 1
+                $('#num_show').val(value)
+                cal_price()
+            });
+            $('#num_show').blur(function () {
+                let count = parseInt($('#num_show').val())
+                if(isNaN(count)||count<=0){
+                    $('#num_show').val(1)
+                }
+            })
+            $('#minus').click(function () {
+                var value = parseInt($('#num_show').val())
+                if(value<=1){
+                    alert('商品数量最小为一')
+                    return;
+                }
+                value -= 1
+                $('#num_show').val(value)
+                cal_price()
+            });
+            cal_price()
+            $('#add_cart').click(function () {
+                sku_id = $('.goods_detail_list').attr('data-id')
+                count = $('#num_show').val()
+                csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+                params = {sku_id, count, csrfmiddlewaretoken}
+                $.post("{% url 'trade:addToCart' %}", params, function (data) {
+                    if(data.status == 5){
+                        alert(data.msg)
+                        location.reload()
+                    }
+                    else{
+                        alert(data.msg)
+                    }
+
+                })
+            })
+        })
+        function cal_price() {
+            single_price = $('#gprice').text()
+            count = $('#num_show').val()
+            total_price = parseFloat(single_price) * parseInt(count)
+            $('#gtotal').text(total_price.toFixed(2)+'元')
+        }
+
+    </script>
+
+</div>
+{% endblock %}

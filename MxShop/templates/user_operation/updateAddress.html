@@ -1,0 +1,36 @@
+{% extends 'user_operation/usercenter.html' %}
+{% block main %}
+    <div class="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'user_operation:userCenterOrder' %}">订单</a></li>
+            <li><a href="{% url 'user_operation:userCenterInfo' %}">个人信息</a></li>
+            <li class="active"><a href="{% url 'user_operation:userCenterAddress' %}">收货地址</a></li>
+        </ul>
+    </div>
+    <div class="shoppingCart">
+        <div style="padding-left: 10px">
+        <h3>更新收货信息</h3>
+                <form  action="{% url 'user_operation:updateAddress' %}" method="post" >
+                    {% csrf_token %}
+                      <div style="width: 80%;margin-top: 20px;font-size: 24px" class="form-group">
+                        <div style="height:130px;">
+                          <label>收件人：</label>
+                          <input name = 'username' value="{{ address.signer_name }}" type="text"   class="form-control input-lg" required="required" minlength="3"
+                                   placeholder="{{ address.signer_name }}" onkeyup="value=value.replace(/[\W]/g,'') "onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+                        </div>
+                        <div style="height:130px;">
+                          <label >电话号码：</label>
+                          <input name="mobile" type="text" value="{{ address.signer_mobile }}"  class="form-control input-lg" required="required" minlength="6" placeholder="{{ address.signer_mobile }}">
+                        </div>
+                        <div style="height:100px;">
+                          <label >收货地址：</label>
+                          <input name="address" type="text" value="{{ address.address }}"  class="form-control input-lg" required="required" placeholder="{{ address.address }}">
+                        </div>
+                      <input type="hidden" name="addressId" value="{{ address.id }}">
+                      <input class="btn btn-lg btn-default"  style="margin:0 auto;width:100px;" type="submit" value="确认">
+                      </div>
+                </form>
+        </div>
+    </div>
+
+{% endblock %}

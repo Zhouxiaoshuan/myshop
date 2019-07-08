@@ -1,0 +1,37 @@
+{% extends 'user_operation/findPassword_base.html' %}
+{% block main %}
+<ul class="resetpwsteps">
+    <li  class="resetpw">获取验证码</li>
+    <li  class="resetpw">核对验证码</li>
+    <li  class="resetpw activebg">设置新密码</li>
+</ul>
+<div class="form">
+    <h3>设置新密码：</h3>
+    <input type="hidden" name="email" value="{{ email }}">
+    <p><input type="password" name="newpw" id="newpw" class="form-control input-lg" style="width: 300px;margin: 0 auto"  placeholder="新密码" autofocus></p>
+    <p><input type="submit" value="确认" style="width: 300px;margin: 0 auto;" class="btn btn-block btn-primary btn-lg" id="pw_btn"></p>
+
+</div>
+<script>
+    $(function () {
+        $('#pw_btn').click(function () {
+            newpw = $('input[name="newpw"]').val()
+            email = $('input[name="email"]').val()
+            csrfmiddlewaretoken  = $('input[name="csrfmiddlewaretoken"]').val()
+            params = {
+                csrfmiddlewaretoken,
+                newpw,
+                email,
+            }
+            $.post('{% url 'user_operation:setNewPassword' %}', params, function (data) {
+                if(data.res == 1){
+                    alert(data.msg)
+                    window.location.href('{% url 'goods:toLogin' %}')
+                }else{
+                }
+            })
+        })
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% load staticfiles %}
+{% load goods_tags %}
+<head>
+<title>MxShop</title>
+
+
+<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+<link href="{% static 'css/style.css' %}" rel="stylesheet" />
+<link href="{% static 'css/form.css' %}" rel="stylesheet" />
+<link href="{% static 'css/etalage.css' %}" rel=" stylesheet" />
+<link href="{% static 'css/star-rating.css' %}" media="all" rel="stylesheet" />
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+
+<link rel="icon" href="{% static 'image/favicon.ico' %}" type="image/x-icon">
+
+
+<script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+<script src="{% static 'js/jquery.wmuSlider.js' %}"></script>
+<script src="{% static 'js/star-rating.js' %}"></script>
+<script src="{% static 'js/jquery.colorbox-min.js' %}"></script>
+<script src="{% static 'js/fangdajing.js' %}"></script>
+    <style>
+    a:Link{collor: #000}
+    a:Visited{color: #000}
+    a:Hover{color: #00BFFF}
+    a:Active{color: green}
+</style>
+
+</head>
+<body>
+{#页面顶部区#}
+    <div class="top-header">
+        <div class="container">
+            <div class="top-header-left">
+                <ul class="support">
+                    <li><a href="#"><label> </label></a></li>
+                    <li><span><img src="{% static 'image/kefu.jpg' %}"></span><a href="#">24x7 live support</a></li>
+                </ul>
+                <ul class="support">
+                    <li class="van"><a href="#"><label> </label></a></li>
+                    <li><a href="#"><span><img src="{% static 'image/car.jpg' %}"></span>Free shipping on order over 500</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{#顶部标志登陆入口#}
+    <div class="bottom-header">
+        <div class="container">
+            <div class="header-bottom-left">
+
+                <div class="logo">
+                    <a href="{% url 'goods:index' %}"><img class="logo-a" src="{% static 'image/logo.ico' %}" alt="潮流服饰" title="潮流服饰"/></a>
+                </div>
+
+                <div class="search">
+                    <form role="search" method="get" id="searchform" action="{% url 'haystack_search' %}">
+                        {% csrf_token %}
+                        <input type="search" name="q">
+                        <input type="submit"  value="SEARCH">
+                    </form>
+                </div>
+
+            </div>
+            <div class="header-bottom-right">
+                <ul class="men-grid">
+                    <li>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'user_operation:userCenter' user.pk %}" style="color: rgb(255, 131, 0);"><span class="glyphicon glyphicon-user"></span><span> 用户中心</span></a>
+                        <a  style="color: rgb(255, 131, 0);"><span> {{ user.username }}</span></a>&nbsp;|<a href="{% url 'user_operation:userLogout' %}" style="color: rgb(255, 131, 0);"><span style="margin-left: -14px;">注销</span></a>
+                        <a href="{% url 'trade:shoppingCart' user.id %}" style="color: rgb(255, 131, 0);"><span> <span class="glyphicon glyphicon-shopping-cart" style="color:rgb(255, 131, 0);"></span>购物车</span></a>
+                        {% else %}
+                        <a href="{% url 'user_operation:toLogin' %}" style="color: rgb(255, 131, 0);"><span class="glyphicon glyphicon-user"></span><span> 用户中心</span></a>
+                        <a href="{% url 'user_operation:toLogin' %}" style="color: rgb(255, 131, 0);"><span> 登录</span></a>&nbsp;|<a href="{% url 'user_operation:toRegister' %}" style="color: rgb(255, 131, 0);"><span style="margin-left: -14px;">注册</span></a>
+                        <a href="{% url 'user_operation:toLogin' %}" style="color: rgb(255, 131, 0);"><span> <span class="glyphicon glyphicon-shopping-cart" style="color:rgb(255, 131, 0);"></span>购物车</span></a>
+                        {% endif %}
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+<div class="container" style="position: relative; " id="main">
+
+<div style="float: left;width: 27%;margin-right: 34px;">
+{#导航栏#}
+    <div class="sub-cate">
+        <div class=" top-nav span_1_of_left">
+            <h3 class="cate">CATEGORIES</h3>
+                <ul class="menu">
+                {% get_firstcategory as firstcategory %}
+                    {% for firstcategory in firstcategory  %}
+                            <li><a href="#">{{ firstcategory }}<img class="arrow-img" src="{% static 'image/arrow1.png' %}" alt=""/> </a>
+                                <ul class="cute">
+                                {% get_secondcategory as secondcategory %}
+                                    {% for secondcategory in secondcategory %}
+                                        {% if secondcategory.parent_category == firstcategory %}
+                                            <li class="subitem1"><a href="{% url 'goods:goodsList' secondcategory.pk %}">{{ secondcategory }}</a></li>
+                                        {% else %}
+                                        {% endif %}
+                                    {% empty %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                    {% endfor %}
+                </ul>
+                <ul class="othermenu">
+                    {% get_secondcategory as secondcategory %}
+                        {% for secondcategory in secondcategory  %}
+                        {% if secondcategory.parent_category == null %}
+                            <li><a href="{% url 'goods:goodsList' secondcategory.pk %}">{{ secondcategory }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                </ul>
+        </div>
+    </div>
+{#配件区#}
+{% get_others as other %}
+    {% for other in other %}
+    <div class="chain-grid" align="center">
+
+            <a href="{{other.get_absolute_url}}"><img class="chain" src="/{{ other.goods_front_image }}" alt=" " /></a>
+            <div class="grid-chain-bottom chain-watch">
+                <span class="actual dolor-left-grid">300$</span>
+                <span class="reducedfrom">500$</span>
+                <h6>Lorem ipsum dolor</h6>
+            </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% block main %}
+
+{% endblock %}
+
+
+</div>
+
+</body>
+{#页面脚部#}
+<div class="footer">
+		<div class="footer-top">
+			<div class="container">
+				<div class="latter">
+					<h6>NEWS-LATTER</h6>
+					<div class="sub-left-right">
+						<form>
+							<input type="text" value="Enter email here"onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter email here';}" />
+							<input type="submit" value="SUBSCRIBE" />
+						</form>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="footer-bottom-cate">
+					<h6>CATEGORIES</h6>
+					<ul>
+						<li><a href="#">Curabitur sapien</a></li>
+						<li><a href="#">Dignissim purus</a></li>
+						<li><a href="#">Tempus pretium</a></li>
+						<li ><a href="#">Dignissim neque</a></li>
+						<li ><a href="#">Ornared id aliquet</a></li>
+						<li><a href="#">Ultrices id du</a></li>
+						<li><a href="#">Commodo sit</a></li>
+						<li ><a href="#">Urna ac tortor sc</a></li>
+						<li><a href="#">Ornared id aliquet</a></li>
+						<li><a href="#">Urna ac tortor sc</a></li>
+						<li ><a href="#">Eget nisi laoreet</a></li>
+						<li ><a href="#">Faciisis ornare</a></li>
+					</ul>
+				</div>
+				<div class="footer-bottom-cate bottom-grid-cat">
+					<h6>FEATURE PROJECTS</h6>
+					<ul>
+						<li><a href="#">Curabitur sapien</a></li>
+						<li><a href="#">Dignissim purus</a></li>
+						<li><a href="#">Tempus pretium</a></li>
+						<li ><a href="#">Dignissim neque</a></li>
+						<li ><a href="#">Ornared id aliquet</a></li>
+						<li><a href="#">Ultrices id du</a></li>
+						<li><a href="#">Commodo sit</a></li>
+					</ul>
+				</div>
+				<div class="footer-bottom-cate">
+					<h6>TOP BRANDS</h6>
+					<ul>
+						<li><a href="#">Curabitur sapien</a></li>
+						<li><a href="#">Dignissim purus</a></li>
+						<li><a href="#">Tempus pretium</a></li>
+						<li ><a href="#">Dignissim neque</a></li>
+						<li ><a href="#">Ornared id aliquet</a></li>
+						<li><a href="#">Ultrices id du</a></li>
+						<li><a href="#">Commodo sit</a></li>
+						<li ><a href="#">Urna ac tortor sc</a></li>
+						<li><a href="#">Ornared id aliquet</a></li>
+						<li><a href="#">Urna ac tortor sc</a></li>
+						<li ><a href="#">Eget nisi laoreet</a></li>
+						<li ><a href="#">Faciisis ornare</a></li>
+					</ul>
+				</div>
+				<div class="footer-bottom-cate cate-bottom">
+					<h6>OUR ADDERSS</h6>
+					<ul>
+						<li>湖北省 </li>
+						<li>武汉市</li>
+						<li> 江夏区</li>
+						<li >高新六路</li>
+						<li class="phone">PH :123456789</li>
+						<li class="temp"> <p class="footer-class">Copyright &copy; 2019.Company name All rights reserved.More Templates <a href="http://www.cssmoban.com/" target="_blank">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" target="_blank">模板之家</a></p></li>
+					</ul>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+
+
+
+<script type="text/javascript">
+			$(function() {
+			    var menu_ul = $('.menu > li > ul'),
+			           menu_a  = $('.menu > li > a');
+			    menu_ul.hide();
+			    menu_a.click(function(e) {
+			        e.preventDefault();
+			        if(!$(this).hasClass('active')) {
+			            menu_a.removeClass('active');
+			            menu_ul.filter(':visible').slideUp('normal');
+			            $(this).addClass('active').next().stop(true,true).slideDown('normal');
+			        } else {
+			            $(this).removeClass('active');
+			            $(this).next().stop(true,true).slideUp('normal');
+			        }
+			    });
+			});
+</script>
+</html>

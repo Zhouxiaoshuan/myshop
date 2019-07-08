@@ -1,0 +1,122 @@
+{% extends 'goods/base.html' %}
+{% block main %}
+<div>
+{#轮播图展示区#}
+    <div class="shoes-grid">
+        <div class="wmuSlider example1 slide-grid" >
+            <div class="wmuSliderWrapper" >
+                {% for carousel_goods in carousel_goods %}
+                <article style="position: absolute; width: 100%; opacity: 0;">
+                    <form action="{% url 'trade:order_getNow' %}" method="post" id="order_form">
+                            {% csrf_token %}
+                    <div class="banner-matter">
+
+                        <input type="hidden" name="sku_id" value="{{ carousel_goods.goods.id }}">
+                        <input type="hidden" name="num_show" value=1>
+                        <a href="{{ carousel_goods.get_absolute_url }}"><img class=" banner-bag" src="{{ carousel_goods.goods.goods_front_image }}" alt=" " /></a>
+                        <div class="banner-off">
+                            <h2>FLAT 60% 0FF</h2>
+                            <span>FOR ALL PURCHASE <b>VALUE</b></span>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et </p>
+                            <input type="submit" value="GET NOW" style="font-size: 1.1em;color:#fff;padding:0.3em 0.4em;background:#323A45;">
+                        </div>
+
+                    </div>
+                    </form>
+                </article>
+                {% endfor %}
+            </div>
+
+{#            <ul class="wmuSliderPagination">#}
+{#                <li><a href="#" class="">0</a></li>#}
+{#                <li><a href="#" class="">1</a></li>#}
+{#                <li><a href="#" class="">2</a></li>#}
+{#            </ul>#}
+        </div>
+{#        <script>#}
+{#            var index=0;#}
+{#            var timer = setInterval(function(){#}
+{#                index = (index==2)?0:index+1;#}
+{#                $(".div").hide().eq(index).show();#}
+{#            },1000);#}
+{#        </script>#}
+        <script>
+            $('.example1').wmuSlider();
+        </script>
+    </div>
+{#轮播图下方展示区#}
+    <div class="shoes-grid-left">
+        {% for recommend in recommend %}
+            <div class=" con-sed-grid">
+                <div class="elit-grid">
+                    <a href="{{recommend.get_absolute_url}}" style="text-decoration:none;"><h4>{{ recommend.name }}</h4></a>
+                    <div>
+                        <span class="actual">¥{{ recommend.shop_price }}</span>
+                        <span class="reducedfrom">¥{{ recommend.market_price }}</span>
+                    </div>
+            </div>
+                <div>
+                <a href="{{ recommend.get_absolute_url }}"><img class=" shoe-left" src="{{ recommend.goods_front_image }}" alt=" " /></a>
+                </div>
+            </div>
+
+        {% endfor %}
+        <div class="clearfix"> </div>
+    </div>
+<div class="single_top">
+{#最新产品标题#}
+    <div class="products">
+        <h5 class="latest-product">LATEST PRODUCTS</h5>
+        <a class="view-all" href="product.html">VIEW ALL<span> </span></a>
+    </div>
+{#最新产品展示#}
+    <div class="product-left">
+        {% for latest_goods in latest_goods %}
+        <div class="product-example">
+            <a href="{{ latest_goods.get_absolute_url }}"><img class="img-responsive chain" src="{{ latest_goods.goods_front_image }}" alt=" " /></a>
+            <span class="star"> </span>
+            <div class="grid-chain-bottom">
+                <a href="{{list.get_absolute_url}}" class="price" style="text-decoration:none"><h6>{{ latest_goods.name }}</h6></a>
+                    <div class="price" style="margin-bottom: 10px;">
+                        <span class="actual">¥{{ latest_goods.shop_price }}</span>
+                        <span class="reducedfrom">¥{{ latest_goods.market_price }}</span>
+                    </div>
+                    <div class="clearfix"> </div>
+            </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+{#热门产品标题#}
+    <div class="products">
+        <h5 class="latest-product">MOSTPOPULAR PRODUCTS</h5>
+        <a class="view-all" href="product.html">VIEW ALL<span> </span></a>
+    </div>
+{#热门产品展示#}
+    <div class="product-left">
+        {% for mostpopular_goods in mostpopular_goods %}
+        <div class=" product-example">
+            <a href="{{ mostpopular_goods.get_absolute_url }}"><img class="img-responsive chain" src="{{ mostpopular_goods.goods_front_image }}" alt=" " /></a>
+            <span class="star"> </span>
+            <div class="grid-chain-bottom">
+                <a href="{{list.get_absolute_url}}" class="price" style="text-decoration:none"><h6>{{ mostpopular_goods.name }}</h6></a>
+                <div class="price" style="margin-bottom: 10px">
+                    <span class="actual">¥{{ mostpopular_goods.shop_price }}</span>
+                    <span class="reducedfrom">¥{{ mostpopular_goods.market_price }}</span>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+</div>
+</div>
+    {% if messages %}
+        <script>
+            {% for msg in messages %}
+                alert('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
+{% endblock %}

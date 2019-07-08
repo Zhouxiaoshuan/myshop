@@ -1,0 +1,28 @@
+{% extends 'goods/base.html' %}
+{% block main %}
+    <div class="single_top">
+        <div class="product-left">
+            {% for list in list %}
+
+
+            <div class=" product-example">
+
+                <a href="{{list.get_absolute_url}}"><img class="img-responsive chain" src="/{{ list.goods_front_image }}" alt=" " /></a>
+                <span class="star"> </span>
+                <div class="grid-chain-bottom">
+
+                    <a href="{{list.get_absolute_url}}" class="price" style="text-decoration:none"><h6>{{ list.name }}</h6></a>
+                    <div class="price" style="margin-bottom: 10px;">
+                        <span class="actual">¥{{ list.shop_price }}</span>
+                        <span class="reducedfrom">¥{{ list.market_price }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+                <p>该商品未在售</p>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock main %}

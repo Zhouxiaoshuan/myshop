@@ -1,0 +1,46 @@
+{% extends 'user_operation/findPassword_base.html' %}
+{% block main %}
+<ul class="resetpwsteps">
+    <li  class="resetpw">获取验证码</li>
+    <li  class="resetpw activebg">核对验证码</li>
+    <li  class="resetpw">设置新密码</li>
+</ul>
+<div class="form">
+    <form action="{% url 'user_operation:checkCode' %}" method="post">
+    {% csrf_token %}
+    <h3>核对验证码：</h3>
+    <input type="hidden" name="checkword" value="{{ checkword }}">
+    <input type="hidden" name="email" value="{{ email }}">
+    <p><input type="text" name="code" id="code" class="form-control input-lg" style="width: 300px;margin: 0 auto"  placeholder="验证码" autofocus></p>
+    <p><input type="submit" value="确认" style="width: 300px;margin: 0 auto;" class="btn btn-block btn-primary btn-lg" id="pw_btn"></p>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <span style="color: red">{{ message }}</span>
+        {% endfor %}
+    {% endif %}
+</div>
+{#    <script>#}
+{#        $(function(){#}
+{#            $('#pw_btn').click(function(){#}
+{#                checkword = $('input[name="checkword"]').val()#}
+{#                email = $('input[name="email"]').val()#}
+{#                code = $('input[name="code"]').val()#}
+{#                csrfmiddlewaretoken  = $('input[name="csrfmiddlewaretoken"]').val()#}
+{#            params = {#}
+{#                csrfmiddlewaretoken,#}
+{#                checkword,#}
+{#                email,#}
+{#                code,#}
+{#            }#}
+{#            $.post('{% url 'user_operation:checkCode' %}', params, function (data) {#}
+{#                if(data.res == 1){#}
+{#                    alert(data.msg)#}
+{#                    window.location.href('{% url 'user_operation:tosetnewpw' email %}')#}
+{#                }else{#}
+{#                }#}
+{#            })#}
+{#            })#}
+{#        })#}
+{#    </script>#}
+{% endblock %}

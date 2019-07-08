@@ -1,0 +1,82 @@
+{% extends 'user_operation/userbase.html' %}
+{% block main %}
+    {% if messages %}
+        {% for message in messages %}
+
+            <script>
+                alert('{{ message.message }}')
+            </script>
+        {% endfor %}
+    {% endif %}
+    <div class="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'user_operation:userCenterOrder' %}">待评价</a></li>
+            <li><a href="{% url 'user_operation:userCenterHistory' %}">历史订单</a></li>
+            <li><a href="{% url 'user_operation:userCenterInfo' %}">个人信息</a></li>
+            <li><a href="{% url 'user_operation:userCenterAddress' %}">收货地址</a></li>
+        </ul>
+    </div>
+    <div class="shoppingCart" id="table">
+        <h1>收货地址</h1>
+            {% if result == 0 %}
+                <h5 class="tip">您还没有设置收货地址</h5>
+            {% else %}
+                <ul style="margin-top: 20px;margin-bottom: 50px">
+                    <li style="width:15%">收件人</li>
+                    <li style="width:15%">电话号码</li>
+                    <li style="width:40%">收货地址</li>
+                    <li style="width:30%">操作</li>
+                </ul>
+
+
+                {% for address in address %}
+                <ul class="cart_list_td" id="{{address.id}}">
+                    {% csrf_token %}
+                    <li style="width: 15%"><span>{{ address.signer_name }}</span></li>
+                    <li style="width:15%"><span>{{ address.signer_mobile }}</span></li>
+                    <li style="width:40%">{{ address.address }}</li>
+                    <li style="width: 10%;"><a class="btn btn-default update" data-id="{{ address.id }}" href="{% url 'user_operation:toUpdateAddress' address.id %}">编辑</a></li>
+                    <li style="width:5%"><a  data-id="{{ address.id }}"  class="glyphicon glyphicon-trash delete" style="padding-top: 3px"></a></li>
+                    <li style="width: 15%;"><span>{% if address.is_default %}默认{% else %}<a class="btn btn-default setDefault" data-id="{{ address.id }}" >设为默认</a>{% endif %}</span></li>
+
+
+                </ul>
+                {% empty %}
+                {% endfor %}
+
+            {% endif %}
+                <a class="btn btn-default btn-lg" style="margin-top: 30px" href="{% url 'user_operation:toAddAddress' %}">添加收货地址</a>
+
+
+    </div>
+    <script>
+        $('.delete').click(function () {
+            addressId = $(this).attr('data-id')
+            csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+            params = {addressId, csrfmiddlewaretoken}
+            $.post('{% url 'user_operation:deleteAddress' %}', params, function (data) {
+                if(data.status == 5){
+                    alert(data.msg)
+                    location.reload()
+                }
+                else{
+                    alert(data.msg)
+                }
+            })
+        })
+        $('.setDefault').click(function () {
+            addressId = $(this).attr('data-id')
+            csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+            params = {addressId, csrfmiddlewaretoken}
+            $.post('{% url 'user_operation:setDefaultAddress' %}', params, function (data) {
+                if(data.status == 5){
+                    location.reload()
+                }
+                else{
+                    alert(data.msg)
+                }
+            })
+        })
+
+    </script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'user_operation/usercenter.html' %}
+{% block main %}
+    <div class="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'user_operation:userCenterOrder' %}">待评价</a></li>
+            <li><a href="{% url 'user_operation:userCenterHistory' %}">历史订单</a></li>
+            <li><a href="{% url 'user_operation:userCenterInfo' %}">个人信息</a></li>
+            <li><a href="{% url 'user_operation:userCenterAddress' %}">收货地址</a></li>
+        </ul>
+    </div>
+    <div class="center_right">
+        <h2>请填写退换货表单：</h2>
+    <div class="logisticsInfo">
+
+        <label>快递公司:</label>
+        <input type="text" id="logistics" name="logistics" class="form-control">
+        <label>物流单号:</label>
+        <input type="" id="number" name="number" class="form-control">
+        <label>退换货原因:</label>
+        <input type="text" id="reason" name="reason" class="form-control">
+        <button type="submit" href="javascript:;" id="changegoods" class="btn btn-default">换&nbsp;&nbsp;货</button>
+        <button type="submit" href="javascript:;" id="returngoods" class="btn btn-default">退&nbsp;&nbsp;货</button>
+    </div>
+    </div>
+    <script>
+        $(function(){
+            $("#changegoods").click(function(){
+                logistics = $("input[name='logistics']").val();
+                number = $(" input[name='number'] ").val();
+                reason = $(" input[name='reason'] ").val();
+                csrfmiddlewaretoken = $(" input[name='csrfmiddlewaretoken'] ").val();
+                params = {logistics, number, reason, csrfmiddlewaretoken};
+                $.post('{% url 'user_operation:changegoods' %}',params, function(data){
+                    if(data.res==5){
+                        alert(data.msg);
+                        window.location('{% url 'user_operation:userCenterOrder' %}')
+                    }else{
+                        alert(data.msg);
+                    }
+                })
+            })
+            $("#returngoods").click(function(){
+                logistics = $("input[name='logistics']").val();
+                number = $(" input[name='number'] ").val();
+                reason = $(" input[name='reason'] ").val();
+                csrfmiddlewaretoken = $(" input[name='csrfmiddlewaretoken'] ").val();
+                params = {logistics, number, reason, csrfmiddlewaretoken};
+                $.post('{% url 'user_operation:returngoods' %}',params, function(data){
+                    if(data.res==5){
+                        alert(data.msg);
+                        location.replace("{% url 'user_operation:userCenterOrder' %}");
+                    }else{
+                        alert(data.msg);
+                    }
+                })
+            })
+
+        });
+
+    </script>
+{% endblock main %}

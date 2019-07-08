@@ -1,0 +1,55 @@
+{% extends 'user_operation/userbase.html' %}
+{% block main %}
+    <div class="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'user_operation:userCenterOrder' %}">待评价</a></li>
+            <li><a href="{% url 'user_operation:userCenterHistory' %}">历史订单</a></li>
+            <li><a href="{% url 'user_operation:userCenterInfo' %}">个人信息</a></li>
+            <li><a href="{% url 'user_operation:userCenterAddress' %}">收货地址</a></li>
+        </ul>
+    </div>
+    <div class="userInfo">
+        <h2 style="margin-bottom:30px">用户信息</h2>
+        <form action="{% url 'user_operation:updateUser' %}" method="post" name="form">
+            {% csrf_token %}
+            <div>
+                <lable style="font-size: 20px;width: 10%;">用户名：</lable>
+                <input type="text" class=" input-lg" value="{{ user.username }}" name="username" onblur="onblus()">
+            </div>
+            <div>
+                <lable style="font-size: 20px;width: 10%;">邮箱：</lable>
+                <input type="email"  class=" input-lg" value="{{ user.email }}" name="email" onblur="onblus()">
+            </div>
+            <label>注册时间：{{ user.date_joined }}</label><br>
+            <label>上次登录：{{ user.last_login }}</label>
+        </form>
+
+        <script>
+            function onblus(){
+                username = form.username.value
+                email = form.email.value
+                var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+                if(reg.test(email)){
+                }else{
+                    alert("请检查邮箱格式是否正确")
+                    location.reload()
+                    return false
+                }
+                csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+                params={username, email, csrfmiddlewaretoken}
+                $.post('{% url 'user_operation:updateUser' %}', params,function(data){
+                        if(data.status==5){
+                            alert(data.msg)
+                            location.reload()
+                        }
+                        else if(data.status == 3){
+                            location.reload()
+                        }
+                        else{
+                            alert(data.msg)
+                            location.reload()
+                        }
+                })
+            }
+        </script>
+{% endblock %}
